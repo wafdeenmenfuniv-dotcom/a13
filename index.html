@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار تفاعلي - الإذاعة كوسيلة اتصال</title>
+<style>
+:root{
+  --primary:#173f7a; --secondary:#f4a51c; --accent:#12a889;
+  --bg:#f4f7fb; --card:#fff; --text:#172033; --muted:#687386;
+  --good:#168a55; --bad:#d83a4b; --line:#e4e9f1;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;font-family:"Tahoma","Arial",sans-serif;background:linear-gradient(135deg,#eef4ff,#f8fbff);
+  color:var(--text);line-height:1.8;
+}
+.container{max-width:1000px;margin:auto;padding:25px 18px 50px}
+.hero{
+  background:linear-gradient(135deg,#123a72,#1f62a8);
+  color:#fff;border-radius:24px;padding:30px;margin-bottom:20px;
+  box-shadow:0 15px 35px rgba(23,63,122,.18);position:relative;overflow:hidden
+}
+.hero:after{content:"";position:absolute;width:260px;height:260px;border-radius:50%;background:rgba(255,255,255,.08);left:-80px;top:-120px}
+.hero h1{margin:0 0 5px;font-size:31px}.hero p{margin:0;color:#eaf3ff}
+.card{
+  background:var(--card);border:1px solid var(--line);border-radius:20px;
+  padding:24px;margin:18px 0;box-shadow:0 8px 25px rgba(28,47,75,.07)
+}
+label{display:block;font-weight:bold;margin-bottom:7px}
+input[type=text]{
+  width:100%;padding:13px 15px;border:2px solid #dfe6ef;border-radius:12px;
+  font-size:16px;outline:none;transition:.2s
+}
+input[type=text]:focus{border-color:#4a86c5;box-shadow:0 0 0 3px rgba(74,134,197,.12)}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.instructions{background:#fff8e9;border-right:5px solid var(--secondary)}
+.question{border-top:5px solid #dce8f7}
+.q-head{display:flex;gap:12px;align-items:flex-start}
+.num{
+  flex:0 0 42px;height:42px;border-radius:50%;background:var(--primary);color:#fff;
+  display:flex;align-items:center;justify-content:center;font-weight:bold
+}
+.q-title{font-size:18px;font-weight:bold;margin:0}
+.options{margin-top:15px;display:grid;gap:10px}
+.option{
+  display:flex;align-items:center;gap:10px;padding:11px 13px;border:1px solid #dfe5ed;
+  border-radius:12px;cursor:pointer;transition:.18s;background:#fbfcfe
+}
+.option:hover{border-color:#8eb4da;background:#f4f9ff}
+.option input{accent-color:var(--primary);transform:scale(1.1)}
+.feedback{display:none;margin-top:12px;padding:12px 14px;border-radius:11px;font-size:14px}
+.feedback.good{display:block;background:#eaf8f1;color:#116b43;border:1px solid #bfe8d2}
+.feedback.bad{display:block;background:#fff0f2;color:#9d2736;border:1px solid #f1c0c7}
+.correct{background:#eaf8f1!important;border-color:#7bc9a2!important}
+.incorrect{background:#fff0f2!important;border-color:#e995a1!important}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:25px}
+button{
+  border:0;border-radius:13px;padding:13px 22px;font-size:16px;font-weight:bold;cursor:pointer
+}
+#submitBtn{background:var(--primary);color:#fff}.reset{background:#edf1f6;color:#26364e}
+button:hover{filter:brightness(.97);transform:translateY(-1px)}
+#result{display:none;text-align:center}
+.score-circle{
+  width:150px;height:150px;border-radius:50%;margin:10px auto 20px;
+  background:conic-gradient(var(--accent) 0deg,#e8edf4 0deg);
+  display:flex;align-items:center;justify-content:center
+}
+.score-inner{width:118px;height:118px;border-radius:50%;background:#fff;display:flex;align-items:center;justify-content:center;font-size:29px;font-weight:bold;color:var(--primary)}
+.result-note{font-weight:bold;font-size:19px}
+.progress-wrap{height:10px;background:#e8edf4;border-radius:20px;overflow:hidden;margin:12px 0}
+#progress{height:100%;width:0;background:linear-gradient(90deg,var(--primary),var(--secondary));transition:.3s}
+.footer{text-align:center;color:var(--muted);font-size:13px;margin-top:20px}
+@media(max-width:700px){.grid{grid-template-columns:1fr}.hero h1{font-size:25px}.card{padding:18px}}
+</style>
+</head>
+<body>
+<div class="container">
+  <section class="hero">
+    <h1>اختبار تفاعلي: الإذاعة كوسيلة اتصال</h1>
+    <p>خصائص الإذاعة • عيوبها • وظائفها • تشابك الوظائف • الأشكال والبرامج الإذاعية</p>
+  </section>
+
+  <section class="card">
+    <h2 style="margin-top:0">بيانات الطالب</h2>
+    <div class="grid">
+      <div>
+        <label for="studentName">اسم الطالب</label>
+        <input id="studentName" type="text" placeholder="اكتب اسمك بالكامل">
+      </div>
+      <div>
+        <label for="academicId">الرقم الأكاديمي</label>
+        <input id="academicId" type="text" placeholder="اكتب الرقم الأكاديمي">
+      </div>
+    </div>
+  </section>
+
+  <section class="card instructions">
+    <h3 style="margin-top:0">تعليمات الاختبار</h3>
+    <ul>
+      <li>يتكون الاختبار من 20 سؤال اختيار من متعدد.</li>
+      <li>اختر إجابة واحدة لكل سؤال.</li>
+      <li>يمكنك معرفة صحة إجابتك بعد الضغط على «تصحيح الاختبار».</li>
+      <li>تظهر التغذية الراجعة المناسبة مع توضيح الإجابة الصحيحة.</li>
+      <li>يتم حساب الدرجة والنسبة المئوية تلقائيًا.</li>
+    </ul>
+    <div class="progress-wrap"><div id="progress"></div></div>
+    <div id="progressText" style="color:#687386;font-size:14px">تمت الإجابة عن 0 من 20</div>
+  </section>
+
+  <form id="quizForm">
+
+    <div class="card question" data-answer="b" data-q="1">
+      <div class="q-head"><div class="num">1</div><p class="q-title">ما الحاسة التي يعتمد عليها الفن الإذاعي أساسًا؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q1" value="a"> البصر</label>
+        <label class="option"><input type="radio" name="q1" value="b"> السمع</label>
+        <label class="option"><input type="radio" name="q1" value="c"> اللمس</label>
+        <label class="option"><input type="radio" name="q1" value="d"> الشم</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="c" data-q="2">
+      <div class="q-head"><div class="num">2</div><p class="q-title">ما الذي يجعل الراديو قادرًا على تنشيط الخيال بدرجة كبيرة؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q2" value="a"> اعتماده على الصورة</label>
+        <label class="option"><input type="radio" name="q2" value="b"> استخدامه للرسوم المتحركة</label>
+        <label class="option"><input type="radio" name="q2" value="c"> اعتماده على الصوت والإيحاءات</label>
+        <label class="option"><input type="radio" name="q2" value="d"> اعتماده على النص المكتوب</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="a" data-q="3">
+      <div class="q-head"><div class="num">3</div><p class="q-title">أي وسيلة كانت أكثر قدرة على الإقناع عند تساوي الظروف وفق المادة؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q3" value="a"> الاتصال الشخصي</label>
+        <label class="option"><input type="radio" name="q3" value="b"> الراديو</label>
+        <label class="option"><input type="radio" name="q3" value="c"> المطبوع</label>
+        <label class="option"><input type="radio" name="q3" value="d"> جميعها متساوية</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="d" data-q="4">
+      <div class="q-head"><div class="num">4</div><p class="q-title">أي من الآتي يمثل صعوبة يتخطاها الإرسال الإذاعي؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q4" value="a"> اختلاف اللغات فقط</label>
+        <label class="option"><input type="radio" name="q4" value="b"> عدم وجود أجهزة استقبال</label>
+        <label class="option"><input type="radio" name="q4" value="c"> الحاجة إلى القراءة</label>
+        <label class="option"><input type="radio" name="q4" value="d"> الجبال والأنهار والبحار والصحارى</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="b" data-q="5">
+      <div class="q-head"><div class="num">5</div><p class="q-title">ما أبرز ما يميز الراديو من حيث سرعة نشر الأخبار؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q5" value="a"> يحتاج إلى إعداد مطبوعات</label>
+        <label class="option"><input type="radio" name="q5" value="b"> يحقق السبق وأولوية النشر بسرعة</label>
+        <label class="option"><input type="radio" name="q5" value="c"> لا يعمل إلا نهارًا</label>
+        <label class="option"><input type="radio" name="q5" value="d"> لا يمكن قطع البرنامج لبث خبر</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="c" data-q="6">
+      <div class="q-head"><div class="num">6</div><p class="q-title">أي من الآتي يُعد من عيوب الراديو كوسيلة اتصال؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q6" value="a"> قدرته على تحريك الخيال</label>
+        <label class="option"><input type="radio" name="q6" value="b"> سهولة استخدامه</label>
+        <label class="option"><input type="radio" name="q6" value="c"> اعتماده على الصوت فقط</label>
+        <label class="option"><input type="radio" name="q6" value="d"> استخدام الموسيقى والمؤثرات</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="a" data-q="7">
+      <div class="q-head"><div class="num">7</div><p class="q-title">لماذا قد لا يحظى الاستماع إلى الراديو بالانتباه والتركيز الكاملين؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q7" value="a"> لأن المستمع قد ينشغل بأعمال أخرى أثناء الاستماع</label>
+        <label class="option"><input type="radio" name="q7" value="b"> لأنه لا يستخدم الصوت</label>
+        <label class="option"><input type="radio" name="q7" value="c"> لأنه يتطلب القراءة والكتابة</label>
+        <label class="option"><input type="radio" name="q7" value="d"> لأنه لا يصل إلى الجماهير</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="d" data-q="8">
+      <div class="q-head"><div class="num">8</div><p class="q-title">أي وظيفة من وظائف الراديو تعني نقل الأخبار والحقائق والمعلومات عن الأحداث الجارية؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q8" value="a"> المؤانسة</label>
+        <label class="option"><input type="radio" name="q8" value="b"> الترفيه</label>
+        <label class="option"><input type="radio" name="q8" value="c"> التنمية</label>
+        <label class="option"><input type="radio" name="q8" value="d"> الإعلام بمعنى الأخبار</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="b" data-q="9">
+      <div class="q-head"><div class="num">9</div><p class="q-title">أي وظيفة تهتم بنشر المعرفة والثقافة والقيم والتقاليد والمعارف الإنسانية؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q9" value="a"> الإعلان</label>
+        <label class="option"><input type="radio" name="q9" value="b"> التثقيف</label>
+        <label class="option"><input type="radio" name="q9" value="c"> المؤانسة</label>
+        <label class="option"><input type="radio" name="q9" value="d"> التحريض</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="c" data-q="10">
+      <div class="q-head"><div class="num">10</div><p class="q-title">ما المقصود بالترفيه في الراديو وفق المادة؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q10" value="a"> نقل الأخبار فقط</label>
+        <label class="option"><input type="radio" name="q10" value="b"> تقديم الدروس المدرسية فقط</label>
+        <label class="option"><input type="radio" name="q10" value="c"> مواد تساعد الناس على قضاء وقت ممتع والشعور بالراحة والسعادة</label>
+        <label class="option"><input type="radio" name="q10" value="d"> تقديم الإعلانات التجارية فقط</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="a" data-q="11">
+      <div class="q-head"><div class="num">11</div><p class="q-title">ما أحد المجالات المهمة للتعليم عن بعد عن طريق الراديو؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q11" value="a"> محو الأمية</label>
+        <label class="option"><input type="radio" name="q11" value="b"> الإعلان التجاري</label>
+        <label class="option"><input type="radio" name="q11" value="c"> الدعاية السياسية فقط</label>
+        <label class="option"><input type="radio" name="q11" value="d"> الترفيه الموسيقي فقط</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="d" data-q="12">
+      <div class="q-head"><div class="num">12</div><p class="q-title">ما المجال الذي يرى النص أنه يرتبط بالمعلومات والتعليم والتدريب والثقافة؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q12" value="a"> المؤانسة</label>
+        <label class="option"><input type="radio" name="q12" value="b"> الإعلان</label>
+        <label class="option"><input type="radio" name="q12" value="c"> الترفيه فقط</label>
+        <label class="option"><input type="radio" name="q12" value="d"> التنمية</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="b" data-q="13">
+      <div class="q-head"><div class="num">13</div><p class="q-title">أي مما يلي مثال على الخدمات التي يمكن أن يقدمها الراديو؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q13" value="a"> عرض الأفلام السينمائية</label>
+        <label class="option"><input type="radio" name="q13" value="b"> أخبار الطرق والطقس ونتائج الامتحانات وخدمة مشكلات الجمهور</label>
+        <label class="option"><input type="radio" name="q13" value="c"> نشر الكتب فقط</label>
+        <label class="option"><input type="radio" name="q13" value="d"> بيع أجهزة الراديو</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="c" data-q="14">
+      <div class="q-head"><div class="num">14</div><p class="q-title">ما المقصود بوظيفة «المؤانسة»؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q14" value="a"> بث الإعلانات فقط</label>
+        <label class="option"><input type="radio" name="q14" value="b"> تقديم الأخبار العاجلة</label>
+        <label class="option"><input type="radio" name="q14" value="c"> استخدام الراديو كصديق ورفيق والتعبير من خلاله عن المشكلات والآراء</label>
+        <label class="option"><input type="radio" name="q14" value="d"> تعليم القراءة والكتابة فقط</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="a" data-q="15">
+      <div class="q-head"><div class="num">15</div><p class="q-title">ما المقصود بالتحريض في وظائف الراديو؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q15" value="a"> الحث أو التحفيز من أجل الإقدام على فعل معين</label>
+        <label class="option"><input type="radio" name="q15" value="b"> تقديم خدمات صحية</label>
+        <label class="option"><input type="radio" name="q15" value="c"> تقديم مواد ترفيهية</label>
+        <label class="option"><input type="radio" name="q15" value="d"> نقل الأخبار فقط</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="d" data-q="16">
+      <div class="q-head"><div class="num">16</div><p class="q-title">بماذا تختلف الدعاية عن الإعلام وفق النص؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q16" value="a"> الدعاية تعتمد دائمًا على الحقائق</label>
+        <label class="option"><input type="radio" name="q16" value="b"> الإعلام يهدف إلى الترفيه فقط</label>
+        <label class="option"><input type="radio" name="q16" value="c"> لا يوجد اختلاف بينهما</label>
+        <label class="option"><input type="radio" name="q16" value="d"> أساليب الدعاية لا تعتمد في معظمها على الحقائق، بينما الإعلام يعتمد على نشر الحقائق</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="b" data-q="17">
+      <div class="q-head"><div class="num">17</div><p class="q-title">أي مما يلي ذُكر كأحد أساليب الدعاية؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q17" value="a"> التعليم الذاتي</label>
+        <label class="option"><input type="radio" name="q17" value="b"> التضليل</label>
+        <label class="option"><input type="radio" name="q17" value="c"> خدمة الجمهور</label>
+        <label class="option"><input type="radio" name="q17" value="d"> المؤانسة</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="c" data-q="18">
+      <div class="q-head"><div class="num">18</div><p class="q-title">ما الهدف الأساسي من الإعلان في الراديو وفق المادة؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q18" value="a"> محو الأمية</label>
+        <label class="option"><input type="radio" name="q18" value="b"> نقل الأخبار السياسية</label>
+        <label class="option"><input type="radio" name="q18" value="c"> الترويج للسلع أو الخدمات وتعريف الجمهور بها</label>
+        <label class="option"><input type="radio" name="q18" value="d"> تقديم الدروس الجامعية</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="a" data-q="19">
+      <div class="q-head"><div class="num">19</div><p class="q-title">أي عبارة تعبر عن تشابك وظائف الراديو؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q19" value="a"> قد يجمع البرنامج الواحد بين التعليم والتثقيف والترفيه والخدمة</label>
+        <label class="option"><input type="radio" name="q19" value="b"> كل وظيفة تعمل بمعزل تام عن الأخرى</label>
+        <label class="option"><input type="radio" name="q19" value="c"> الإعلان لا يمكن أن يقدم خدمة للجمهور</label>
+        <label class="option"><input type="radio" name="q19" value="d"> لا يمكن للمستمع الاتصال بالإذاعة</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="card question" data-answer="d" data-q="20">
+      <div class="q-head"><div class="num">20</div><p class="q-title">ما العنصر الذي يساعد الراديو على الإيحاء بالمكان والحركة والزمان؟</p></div>
+      <div class="options">
+        <label class="option"><input type="radio" name="q20" value="a"> الصور الثابتة</label>
+        <label class="option"><input type="radio" name="q20" value="b"> الجداول المطبوعة</label>
+        <label class="option"><input type="radio" name="q20" value="c"> الرسوم المتحركة</label>
+        <label class="option"><input type="radio" name="q20" value="d"> المؤثرات الصوتية</label>
+      </div>
+      <div class="feedback"></div>
+    </div>
+
+    <div class="actions">
+      <button type="button" id="submitBtn">تصحيح الاختبار وإظهار النتيجة</button>
+      <button type="button" class="reset" onclick="location.reload()">إعادة الاختبار</button>
+    </div>
+  </form>
+
+  <section class="card" id="result">
+    <h2>نتيجة الاختبار</h2>
+    <div class="score-circle" id="scoreCircle"><div class="score-inner" id="scoreValue">0%</div></div>
+    <div class="result-note" id="resultText"></div>
+    <p id="studentResult"></p>
+    <p id="academicResult"></p>
+    <p style="color:#687386">يمكن للطالب مراجعة التغذية الراجعة أسفل كل سؤال لمعرفة سبب صحة أو خطأ الإجابة.</p>
+  </section>
+
+  <div class="footer">اختبار تعليمي تفاعلي مبني على المادة المرفقة حول الإذاعة كوسيلة اتصال.</div>
+</div>
+
+<script>
+const questions = [...document.querySelectorAll('.question')];
+const form = document.getElementById('quizForm');
+const progress = document.getElementById('progress');
+const progressText = document.getElementById('progressText');
+
+function updateProgress(){
+  let answered = 0;
+  questions.forEach(q => { if(q.querySelector('input:checked')) answered++; });
+  progress.style.width = (answered/questions.length*100) + '%';
+  progressText.textContent = `تمت الإجابة عن ${answered} من ${questions.length}`;
+}
+form.addEventListener('change', updateProgress);
+
+const feedback = {
+  1:['صحيح.','الفن الإذاعي يعتمد أساسًا على حاسة السمع.'],
+  2:['صحيح.','اعتماد الراديو على الصوت والإيحاءات يتيح للمستمع مساحة واسعة للتخيل والتصور.'],
+  3:['صحيح.','تذكر المادة أن الاتصال الشخصي أكثر إقناعًا من الراديو، والراديو أكثر من المطبوع عند تساوي الظروف.'],
+  4:['صحيح.','تشير المادة إلى قدرة الإرسال الإذاعي على تخطي الصعوبات الطبيعية كالجبال والأنهار والبحار والصحارى.'],
+  5:['صحيح.','الراديو وسيلة سريعة للنشر وتتميز بالسبق وأولوية نشر الخبر.'],
+  6:['صحيح.','من جوانب الضعف أن الراديو وسيلة سمعية فقط، ولذلك يحتاج إلى التركيز للاستفادة منه.'],
+  7:['صحيح.','قد يكون الاستماع عرضيًا أو بأذن واحدة لأن المستمع يشغل نفسه بأعمال أخرى.'],
+  8:['صحيح.','الإعلام بمعنى الأخبار هو نقل الأخبار والحقائق والمعلومات عن الأحداث الجارية والأفكار والآراء.'],
+  9:['صحيح.','التثقيف يعني المساهمة في نشر المعرفة والثقافة والقيم والمعارف الإنسانية.'],
+  10:['صحيح.','الترفيه يشمل المواد التي تمنح المستمع المتعة والراحة والسعادة وتخفف بعض متاعب الحياة.'],
+  11:['صحيح.','ذكرت المادة ثلاثة مجالات مهمة للتعليم عن بعد: محو الأمية، تعليم الكبار، والجامعة المفتوحة.'],
+  12:['صحيح.','ترتبط التنمية بالمعلومات والتعليم والتدريب والثقافة، وتستهدف مستقبلًا وحياة أفضل للإنسان.'],
+  13:['صحيح.','تشمل الخدمات الإذاعية أخبار الطرق والطقس ونتائج الامتحانات وحل مشكلات الجماهير وغيرها.'],
+  14:['صحيح.','المؤانسة تجعل الراديو صديقًا ورفيقًا، وتتيح للمستمع التعبير عن مشكلاته وآرائه ومشاعره.'],
+  15:['صحيح.','التحريض هو الحث أو التحفيز من أجل الإقدام على فعل أو أفعال معينة.'],
+  16:['صحيح.','النص يميز الإعلام باعتماده على نشر الحقائق، بينما لا تعتمد أساليب الدعاية في معظمها على الحقائق.'],
+  17:['صحيح.','التضليل أحد الممارسات الدعائية التي تناولها النص، إلى جانب التخويف والاستمالة والتخدير.'],
+  18:['صحيح.','الإعلان دعوة لترويج السلع أو الخدمات والتعريف بمزاياها ودعوة الجمهور إلى قبولها أو شرائها.'],
+  19:['صحيح.','وظائف الراديو متشابكة؛ فقد تدخل برامج التعليم والتثقيف والترفيه في مجال الخدمة، وغيرها.'],
+  20:['صحيح.','المؤثرات الصوتية تساعد في الإيحاء بالمكان والحركة والزمان، وتمنح المستمع وصفًا سمعيًا من خلال الخيال.']
+};
+
+document.getElementById('submitBtn').addEventListener('click', () => {
+  const name = document.getElementById('studentName').value.trim();
+  const id = document.getElementById('academicId').value.trim();
+
+  if(!name || !id){
+    alert('من فضلك اكتب اسم الطالب والرقم الأكاديمي أولًا.');
+    window.scrollTo({top:0,behavior:'smooth'});
+    return;
+  }
+
+  let score = 0;
+  let unanswered = 0;
+
+  questions.forEach(q => {
+    const answer = q.dataset.answer;
+    const selected = q.querySelector('input:checked');
+    const fb = q.querySelector('.feedback');
+    const labels = [...q.querySelectorAll('.option')];
+
+    labels.forEach(label => label.classList.remove('correct','incorrect'));
+
+    labels.forEach(label => {
+      const input = label.querySelector('input');
+      if(input.value === answer) label.classList.add('correct');
+    });
+
+    if(!selected){
+      unanswered++;
+      fb.className = 'feedback bad';
+      fb.innerHTML = '<strong>لم تتم الإجابة.</strong> اختر إجابة لهذا السؤال.';
+    } else if(selected.value === answer){
+      score++;
+      fb.className = 'feedback good';
+      fb.innerHTML = `<strong>${feedback[q.dataset.q][0]}</strong> ${feedback[q.dataset.q][1]}`;
+    } else {
+      selected.closest('.option').classList.add('incorrect');
+      fb.className = 'feedback bad';
+      fb.innerHTML = `<strong>إجابة غير صحيحة.</strong> ${feedback[q.dataset.q][1]}`;
+    }
+  });
+
+  const percent = Math.round(score/questions.length*100);
+  const result = document.getElementById('result');
+  const scoreValue = document.getElementById('scoreValue');
+  const circle = document.getElementById('scoreCircle');
+
+  scoreValue.textContent = percent + '%';
+  circle.style.background = `conic-gradient(var(--accent) ${percent*3.6}deg,#e8edf4 ${percent*3.6}deg)`;
+
+  let message;
+  if(percent >= 90) message = 'ممتاز جدًا! لديك إتقان قوي للمادة.';
+  else if(percent >= 75) message = 'جيد جدًا! مستواك جيد مع حاجة بسيطة للمراجعة.';
+  else if(percent >= 60) message = 'جيد. راجع الأسئلة التي أخطأت فيها لتعزيز الفهم.';
+  else message = 'تحتاج إلى مراجعة المادة مرة أخرى ثم إعادة الاختبار.';
+
+  document.getElementById('resultText').textContent = message;
+  document.getElementById('studentResult').textContent = `اسم الطالب: ${name} — الدرجة: ${score} من ${questions.length}`;
+  document.getElementById('academicResult').textContent = `الرقم الأكاديمي: ${id}${unanswered ? ` — أسئلة غير مجاب عنها: ${unanswered}` : ''}`;
+
+  result.style.display = 'block';
+  result.scrollIntoView({behavior:'smooth',block:'start'});
+});
+</script>
+</body>
+</html>
